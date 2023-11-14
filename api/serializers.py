@@ -86,3 +86,9 @@ class PublicStatementsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PublicStatements
         fields = "__all__"
+
+
+class GradeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Grade
+        fields = "__all__"
