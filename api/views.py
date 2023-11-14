@@ -9,23 +9,28 @@ from api.serializers import *
 class SchoolViewSet(viewsets.ModelViewSet):
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
+    permission_classes = [IsPrincipal]
 
 
 # Create your views here.
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    permission_classes = [IsTeacher, IsSameSchool, IsTeacherOfSameCourse]
+    # teacher can only see students in his courses of same school
 
 
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
+    permission_classes = [IsPrincipal, IsSameSchool]
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
-    permission_classes = [IsTeacher, IsSameSchool]
+    permission_classes = [IsTeacher, IsSameSchool, IsTeacherOfSameCourse]
+    #
 
 
 class AttendanceReportViewSet(viewsets.ModelViewSet):

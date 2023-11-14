@@ -78,8 +78,6 @@ class Teacher(CustomUser):
 
 class Student(CustomUser):
     semester = models.IntegerField()
-    # one student can have many grades
-    grade = models.ManyToManyField("Grade", blank=True)
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, default=None
     )  # many to one relation between school and student
