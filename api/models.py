@@ -124,6 +124,9 @@ class PublicStatements(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=500)
     date = models.DateField(auto_now_add=True)
+    sender = models.ForeignKey(Teacher, on_delete=models.CASCADE, default=None)
+    # many to one relation between school and public statements
+    school = models.ForeignKey(School, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return self.title
