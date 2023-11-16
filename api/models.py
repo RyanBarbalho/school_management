@@ -1,5 +1,21 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.db import models, transaction
+
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("The Email field must be set")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        return self.create_user(email, password, **extra_fields)
 
 
 class Principal(models.Manager):
@@ -22,7 +38,7 @@ class Principal(models.Manager):
         )
         school.save()
 
-        principal = Teacher(
+        principal = Teacher.objects.create(
             name=principal_name,
             email=principal_email,
             password=principal_password,
@@ -35,18 +51,16 @@ class Principal(models.Manager):
 
 
 class CustomUser(AbstractUser):
-    name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=254)
-    password = models.CharField(max_length=50)
-    phone = models.IntegerField()
-    address = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []  # removes email from REQUIRED_FIELDS
 
     groups = models.ManyToManyField(Group, related_name="customuser_groups")
     user_permissions = models.ManyToManyField(
         Permission, related_name="customuser_user_permissions"
     )
-
-    objects = Principal()
 
 
 class School(models.Model):
@@ -64,6 +78,9 @@ class School(models.Model):
 
 
 class Teacher(CustomUser):
+    name = models.CharField(max_length=50, default="user")
+    phone = models.IntegerField(null=True)
+    address = models.CharField(max_length=50, null=True)
     is_principal = models.BooleanField(default=False)
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, default=None
@@ -79,6 +96,9 @@ class Teacher(CustomUser):
 
 
 class Student(CustomUser):
+    name = models.CharField(max_length=50, default="user")
+    phone = models.IntegerField(null=True)
+    address = models.CharField(max_length=50, null=True)
     semester = models.IntegerField()
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, default=None

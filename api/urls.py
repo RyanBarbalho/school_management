@@ -17,5 +17,6 @@ router.register("grades", views.GradeViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("principal", views.PrincipalCreate.as_view(), name=views.PrincipalCreate.name),
-    path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
+    path("api-token-auth", obtain_auth_token, name="api_token_auth"),
+    path("login/", views.LoginView.as_view(), name="login"),
 ]

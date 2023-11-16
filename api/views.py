@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from api.models import *
 from api.permissions import *
@@ -12,7 +13,9 @@ from api.serializers import *
 class SchoolViewSet(viewsets.ModelViewSet):
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
-    permission_classes = [IsPrincipal]
+    permission_classes = [permissions.AllowAny]
+    # get all schools anyone can do it
+    # create school only principal can do it
 
 
 # Create your views here.
@@ -26,7 +29,7 @@ class StudentViewSet(viewsets.ModelViewSet):
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
-    permission_classes = [IsPrincipal, IsSameSchool]
+    permission_classes = [permissions.AllowAny]
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):
@@ -105,4 +108,10 @@ class GradeViewSet(viewsets.ModelViewSet):
 class PrincipalCreate(generics.CreateAPIView):
     name = "create-principal"
     serializer_class = PrincipalSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class LoginView(TokenObtainPairView):
+    name = "login"
+    serializer_class = LoginSerializer
     permission_classes = [permissions.AllowAny]

@@ -1,11 +1,10 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from api.models import *
 
 from .models import School
-
-# responsible for creating school and principal
 
 
 class SchoolSerializer(serializers.ModelSerializer):
@@ -42,8 +41,13 @@ class TeacherSerializer(serializers.ModelSerializer):
             "address",
         )
 
-    def create(self, validated_data):
-        return Teacher.objects.create_user(**validated_data)
+    def create(self, validated_data):  # verifica se a senha é nula ou não
+        password = validated_data.pop("password", None)
+        if password is not None:
+            teacher = Teacher.objects.create_user(password=password, **validated_data)
+        else:
+            raise serializers.ValidationError("Password is required")
+        return teacher
 
 
 class PrincipalSerializer(serializers.Serializer):
@@ -95,3 +99,12 @@ class GradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Grade
         fields = "__all__"
+
+
+class LoginSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token["email"] = user.email
+        return token
