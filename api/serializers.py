@@ -1,6 +1,9 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from api.models import *
+
+from .models import School
 
 # responsible for creating school and principal
 
@@ -24,6 +27,9 @@ class StudentSerializer(serializers.ModelSerializer):
             "password": {"write_only": True},
         }
 
+    def create(self, validated_data):
+        return Student.objects.create_user(**validated_data)
+
 
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,22 +38,23 @@ class TeacherSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "email",
-            "semester",
+            "phone",
+            "address",
         )
 
-
-""" responsible for creating school and principal """
+    def create(self, validated_data):
+        return Teacher.objects.create_user(**validated_data)
 
 
 class PrincipalSerializer(serializers.Serializer):
     school = SchoolSerializer()
-    Principal = TeacherSerializer()
+    teacher = TeacherSerializer()
 
     def create(self, validated_data):
         school_data = validated_data["school"]
-        principal_data = validated_data["principal"]
+        principal_data = validated_data["teacher"]
 
-        school, principal = School.objects.create_school(
+        school, teacher = School.objects.create_school(
             school_name=school_data.get("name"),
             school_address=school_data.get("address"),
             school_phone=school_data.get("phone"),
@@ -57,11 +64,7 @@ class PrincipalSerializer(serializers.Serializer):
             principal_phone=principal_data.get("phone"),
             principal_address=principal_data.get("address"),
         )
-        return {"school": school, "principal": principal}
-
-    # por enquanto, não é necessário atualizar o principal
-    def update(self, instance, validated_data):
-        raise NotImplementedError("Cannot call update() on an account")
+        return {"school": school, "teacher": teacher}
 
 
 class CourseSerializer(serializers.ModelSerializer):

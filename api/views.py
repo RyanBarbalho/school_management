@@ -1,5 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import generics, status, viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from api.models import *
 from api.permissions import *
@@ -78,3 +81,28 @@ class GradeViewSet(viewsets.ModelViewSet):
         if self.request.user.is_student:
             return Grade.objects.filter(student=self.request.user.id)
         return super().get_queryset()
+
+
+# class CreateSchoolView(APIView):
+#     def post(self, request, format=None):
+#         data = self.request.data
+#         User = get_user_model()
+#         school, principal = User.objects.create_school(
+#             school_name=data.get("school_name"),
+#             school_address=data.get("school_address"),
+#             school_phone=data.get("school_phone"),
+#             principal_name=data.get("principal_name"),
+#             principal_email=data.get("principal_email"),
+#             principal_password=data.get("principal_password"),
+#             principal_phone=data.get("principal_phone"),
+#             principal_address=data.get("principal_address"),
+#         )
+#         return Response(
+#             {"status": "School and Principal created"}, status=status.HTTP_201_CREATED
+#         )
+
+
+class PrincipalCreate(generics.CreateAPIView):
+    name = "create-principal"
+    serializer_class = PrincipalSerializer
+    permission_classes = [permissions.AllowAny]

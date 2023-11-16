@@ -2,19 +2,6 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models, transaction
 
 
-class CustomUser(AbstractUser):
-    name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=254)
-    password = models.CharField(max_length=50)
-    phone = models.IntegerField()
-    address = models.CharField(max_length=50)
-
-    groups = models.ManyToManyField(Group, related_name="customuser_groups")
-    user_permissions = models.ManyToManyField(
-        Permission, related_name="customuser_user_permissions"
-    )
-
-
 class Principal(models.Manager):
     @transaction.atomic
     def create_school(
@@ -35,7 +22,7 @@ class Principal(models.Manager):
         )
         school.save()
 
-        principal = Teacher.objects.create_user(
+        principal = Teacher(
             name=principal_name,
             email=principal_email,
             password=principal_password,
@@ -45,6 +32,21 @@ class Principal(models.Manager):
             school=school,
         )
         return school, principal
+
+
+class CustomUser(AbstractUser):
+    name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=254)
+    password = models.CharField(max_length=50)
+    phone = models.IntegerField()
+    address = models.CharField(max_length=50)
+
+    groups = models.ManyToManyField(Group, related_name="customuser_groups")
+    user_permissions = models.ManyToManyField(
+        Permission, related_name="customuser_user_permissions"
+    )
+
+    objects = Principal()
 
 
 class School(models.Model):
