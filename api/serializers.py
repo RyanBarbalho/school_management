@@ -40,14 +40,9 @@ class TeacherSerializer(serializers.ModelSerializer):
             "phone",
             "address",
         )
-
-    def create(self, validated_data):  # verifica se a senha é nula ou não
-        password = validated_data.pop("password", None)
-        if password is not None:
-            teacher = Teacher.objects.create_user(password=password, **validated_data)
-        else:
-            raise serializers.ValidationError("Password is required")
-        return teacher
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
 
 
 class PrincipalSerializer(serializers.Serializer):
@@ -99,12 +94,3 @@ class GradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Grade
         fields = "__all__"
-
-
-class LoginSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-
-        token["email"] = user.email
-        return token

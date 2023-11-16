@@ -109,9 +109,3 @@ class PrincipalCreate(generics.CreateAPIView):
     name = "create-principal"
     serializer_class = PrincipalSerializer
     permission_classes = [permissions.AllowAny]
-
-
-class LoginView(TokenObtainPairView):
-    name = "login"
-    serializer_class = LoginSerializer
-    permission_classes = [permissions.AllowAny]

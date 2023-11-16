@@ -1,21 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.db import models, transaction
 
-
-class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError("The Email field must be set")
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-        return self.create_user(email, password, **extra_fields)
+from .managers import CustomUserManager
 
 
 class Principal(models.Manager):
@@ -38,19 +24,21 @@ class Principal(models.Manager):
         )
         school.save()
 
-        principal = Teacher.objects.create(
-            name=principal_name,
+        principal = Teacher.objects.create_user(
             email=principal_email,
             password=principal_password,
+            name=principal_name,
             phone=principal_phone,
             address=principal_address,
             is_principal=True,
             school=school,
         )
+
         return school, principal
 
 
 class CustomUser(AbstractUser):
+    username = None
     email = models.EmailField(unique=True)
     objects = CustomUserManager()
 
@@ -82,9 +70,7 @@ class Teacher(CustomUser):
     phone = models.IntegerField(null=True)
     address = models.CharField(max_length=50, null=True)
     is_principal = models.BooleanField(default=False)
-    school = models.ForeignKey(
-        School, on_delete=models.CASCADE, default=None
-    )  # many to one relation between school and teacher
+    school = models.ForeignKey(School, on_delete=models.CASCADE, default=None)
     # decidi fazer many to one pq um professor pode dar aula em mais de uma escola mas
     # n seria com a mesma conta no sistema
 
