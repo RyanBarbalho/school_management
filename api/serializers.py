@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -14,14 +15,11 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    school = serializers.PrimaryKeyRelatedField(queryset=School.objects.all())
+
     class Meta:
         model = Student
-        fields = (
-            "id",
-            "name",
-            "email",
-            "semester",
-        )
+        fields = ("id", "name", "email", "semester", "school")
         extra_kwargs = {
             "password": {"write_only": True},
         }
@@ -29,20 +27,19 @@ class StudentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Student.objects.create_user(**validated_data)
 
+    def validate_password(self, value: str) -> str:
+        return make_password(value)
+
 
 class TeacherSerializer(serializers.ModelSerializer):
+    school = serializers.PrimaryKeyRelatedField(queryset=School.objects.all())
+
     class Meta:
         model = Teacher
-        fields = (
-            "id",
-            "name",
-            "email",
-            "phone",
-            "address",
-        )
-        extra_kwargs = {
-            "password": {"write_only": True},
-        }
+        fields = ("id", "email", "password", "name", "phone", "address", "school")
+
+    def validate_password(self, value: str) -> str:
+        return make_password(value)
 
 
 class PrincipalSerializer(serializers.Serializer):
@@ -94,3 +91,11 @@ class GradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Grade
         fields = "__all__"
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        self.user.is_active = True
+        self.user.save()
+        return data
