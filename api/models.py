@@ -24,15 +24,17 @@ class Principal(models.Manager):
         )
         school.save()
 
-        principal = Teacher.objects.create_user(
+        principal = Teacher(
             email=principal_email,
-            password=principal_password,
             name=principal_name,
             phone=principal_phone,
             address=principal_address,
             is_principal=True,
             school=school,
+            is_active=True,
         )
+        principal.set_password(principal_password)
+        principal.save()
 
         return school, principal
 
@@ -55,7 +57,7 @@ class School(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=50)
     phone = models.IntegerField()
-
+    principal = models.OneToOneField("api.Teacher", on_delete=models.CASCADE, null=True)
     objects = Principal()
 
     class Meta:
@@ -69,7 +71,6 @@ class Teacher(CustomUser):
     name = models.CharField(max_length=50, default="user")
     phone = models.IntegerField(null=True)
     address = models.CharField(max_length=50, null=True)
-    is_principal = models.BooleanField(default=False)
     school = models.ForeignKey(School, on_delete=models.CASCADE, default=None)
     # decidi fazer many to one pq um professor pode dar aula em mais de uma escola mas
     # n seria com a mesma conta no sistema

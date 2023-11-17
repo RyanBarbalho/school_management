@@ -23,7 +23,20 @@ class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     permission_classes = [IsTeacher, IsSameSchool, IsTeacherOfSameCourse]
+
     # teacher can only see students in his courses of same school
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_principal:
+            return Student.objects.all()
+        else:
+            return Student.objects.filter(course__teacher=user)
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [IsTeacher(), IsSameSchool(), IsTeacherOfSameCourse()]
+        else:
+            return [IsPrincipal()]
 
 
 class TeacherViewSet(viewsets.ModelViewSet):
@@ -109,7 +122,3 @@ class PrincipalCreate(generics.CreateAPIView):
     name = "create-principal"
     serializer_class = PrincipalSerializer
     permission_classes = [permissions.AllowAny]
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer

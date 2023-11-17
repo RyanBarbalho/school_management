@@ -24,11 +24,12 @@ class StudentSerializer(serializers.ModelSerializer):
             "password": {"write_only": True},
         }
 
+    # cria o model e a senha hashada é sobrescrita
     def create(self, validated_data):
-        return Student.objects.create_user(**validated_data)
-
-    def validate_password(self, value: str) -> str:
-        return make_password(value)
+        instance = super().create(validated_data)
+        instance.set_password(validated_data["password"])
+        instance.save()
+        return instance
 
 
 class TeacherSerializer(serializers.ModelSerializer):
@@ -38,8 +39,12 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = Teacher
         fields = ("id", "email", "password", "name", "phone", "address", "school")
 
-    def validate_password(self, value: str) -> str:
-        return make_password(value)
+    # cria o model e a senha hashada é sobrescrita
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+        instance.set_password(validated_data["password"])
+        instance.save()
+        return instance
 
 
 class PrincipalSerializer(serializers.Serializer):
@@ -91,11 +96,3 @@ class GradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Grade
         fields = "__all__"
-
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        self.user.is_active = True
-        self.user.save()
-        return data

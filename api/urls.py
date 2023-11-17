@@ -18,5 +18,5 @@ router.register("grades", views.GradeViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("principal", views.PrincipalCreate.as_view(), name=views.PrincipalCreate.name),
-    path("login", views.CustomTokenObtainPairView.as_view(), name="login"),
+    path("login", TokenObtainPairView.as_view(), name="login"),
 ]
