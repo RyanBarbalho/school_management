@@ -3,6 +3,8 @@ from django.db import models
 
 from api.managers import CustomUserManager
 
+from .school import School
+
 
 class CustomUser(AbstractUser):
     username = None
@@ -34,6 +36,7 @@ class Student(CustomUser):
     name = models.CharField(max_length=50, default="user")
     phone = models.IntegerField(null=True)
     address = models.CharField(max_length=50, null=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name

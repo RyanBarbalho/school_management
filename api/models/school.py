@@ -28,12 +28,17 @@ class Principal(models.Manager):
             name=principal_name,
             phone=principal_phone,
             address=principal_address,
-            is_principal=True,
-            school=school,
             is_active=True,
         )
         principal.set_password(principal_password)
         principal.save()
+
+        school_teachers = SchoolTeachers(
+            school=school,
+            teacher=principal,
+            isPrincipal=True,
+        )
+        school_teachers.save()
 
         return school, principal
 
@@ -42,7 +47,6 @@ class School(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=50)
     phone = models.IntegerField()
-    principal = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     objects = Principal()
 
     class Meta:
@@ -67,6 +71,7 @@ class PublicStatements(models.Model):
 class SchoolTeachers(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE, default=None)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, default=None)
+    isPrincipal = models.BooleanField(default=False)
 
     class Meta:
         db_table = "school_teachers"
