@@ -24,12 +24,7 @@ class Semester(models.Model):
         return self.name
 
 
-class SemesterCourse(models.Model):
-    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = "semester_courses"
+# apaguei semestercourse, verificar se funciona sem essa classe de relacionamento
 
 
 # grades

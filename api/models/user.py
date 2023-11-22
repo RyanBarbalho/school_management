@@ -1,9 +1,10 @@
-from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
+from django.db.models import get_model
 
 from api.managers import CustomUserManager
 
-from .school import School
+School = get_model("api", "School")
 
 
 class CustomUser(AbstractUser):
@@ -18,6 +19,11 @@ class CustomUser(AbstractUser):
     user_permissions = models.ManyToManyField(
         Permission, related_name="customuser_user_permissions"
     )
+
+    class Meta:
+        app_label = "api"
+
+    # adicionei no tratamento do erro o custom_user❌❌❌❌
 
 
 class Teacher(CustomUser):

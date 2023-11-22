@@ -1,6 +1,6 @@
 from django.db import models, transaction
 
-from api.models import Teacher
+from .user import Teacher
 
 
 class Principal(models.Manager):

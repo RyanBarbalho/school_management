@@ -2,7 +2,11 @@ from rest_framework import generics, permissions, viewsets
 
 from api.models import *
 from api.permissions import *
-from api.serializers import *
+from api.serializers.attendanceSerializer import *
+from api.serializers.courseSerializer import *
+from api.serializers.schoolSerializer import *
+from api.serializers.schoolYearSerializer import *
+from api.serializers.userSerializer import *
 
 
 class SchoolViewSet(viewsets.ModelViewSet):

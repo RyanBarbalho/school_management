@@ -1,7 +1,7 @@
 from django.db import models
 
 from .course import Course
-from .user import Student, Teacher
+from .user import Student
 
 
 # many to many relation between student and course
