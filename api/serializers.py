@@ -1,11 +1,8 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from api.models import *
-
-from .models import School
+from api.models.course import *
+from api.models.school import *
+from api.models.user import *
 
 
 class SchoolSerializer(serializers.ModelSerializer):
@@ -14,6 +11,7 @@ class SchoolSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+# ❌❌❌❌❌ MUDAR ❌❌❌❌❌ (questao do semester) ❌❌❌❌❌
 class StudentSerializer(serializers.ModelSerializer):
     school = serializers.PrimaryKeyRelatedField(queryset=School.objects.all())
 

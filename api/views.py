@@ -1,9 +1,4 @@
-from django.contrib.auth import get_user_model
-from django.shortcuts import render
-from rest_framework import generics, permissions, status, viewsets
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import generics, permissions, viewsets
 
 from api.models import *
 from api.permissions import *
@@ -70,10 +65,8 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_teacher:
             return Course.objects.filter(teacher=self.request.user.id)
-        if self.request.user.is_student:
+        else:
             return Course.objects.filter(student=self.request.user.id)
-
-        return super().get_queryset()
 
 
 class PublicStatementsViewSet(viewsets.ModelViewSet):
