@@ -1,13 +1,9 @@
 from django.db import models
 
-from .course import Course
-from .school import School
-from .user import Student
-
 
 class SchoolYear(models.Model):
     year = models.CharField(max_length=50)
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    school = models.ForeignKey("api.School", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "school_years"
@@ -29,8 +25,8 @@ class Semester(models.Model):
 
 # grades
 class Grade(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    Course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey("api.Student", on_delete=models.CASCADE)
+    Course = models.ForeignKey("api.Course", on_delete=models.CASCADE)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
 
     firstGrade = models.DecimalField(max_digits=2, decimal_places=2)

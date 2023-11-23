@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models.attendance import *
+from api.modelsDirec.attendance import *
 
 
 class AttendanceSerializer(serializers.ModelSerializer):

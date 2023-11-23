@@ -1,6 +1,10 @@
 from rest_framework import generics, permissions, viewsets
 
-from api.models import *
+from api.modelsDirec.attendance import *
+from api.modelsDirec.course import *
+from api.modelsDirec.school import *
+from api.modelsDirec.schoolyear import *
+from api.modelsDirec.user import *
 from api.permissions import *
 from api.serializers.attendanceSerializer import *
 from api.serializers.courseSerializer import *

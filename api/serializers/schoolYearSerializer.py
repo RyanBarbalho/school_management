@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models.schoolyear import *
+from api.modelsDirec.schoolyear import *
 
 
 class SchoolYearSerializer(serializers.ModelSerializer):

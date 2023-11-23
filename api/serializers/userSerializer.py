@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from api.models.user import *
+from api.modelsDirec.school import School
+from api.modelsDirec.user import Student, Teacher
 
 
 class TeacherSerializer(serializers.ModelSerializer):

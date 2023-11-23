@@ -60,7 +60,7 @@ class PublicStatements(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=500)
     date = models.DateField(auto_now_add=True)
-    sender = models.ForeignKey(Teacher, on_delete=models.CASCADE, default=None)
+    sender = models.ForeignKey("api.Teacher", on_delete=models.CASCADE, default=None)
     # many to one relation between school and public statements
     school = models.ForeignKey(School, on_delete=models.CASCADE, default=None)
 
@@ -70,7 +70,7 @@ class PublicStatements(models.Model):
 
 class SchoolTeachers(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE, default=None)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, default=None)
+    teacher = models.ForeignKey("api.Teacher", on_delete=models.CASCADE, default=None)
     isPrincipal = models.BooleanField(default=False)
 
     class Meta:

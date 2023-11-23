@@ -1,13 +1,10 @@
 from django.db import models
 
-from .course import Course
-from .user import Student
-
 
 # many to many relation between student and course
 class Attendance(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey("api.Student", on_delete=models.CASCADE)
+    course = models.ForeignKey("api.Course", on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
     status = models.BooleanField(default=False)
 
@@ -20,8 +17,8 @@ class Attendance(models.Model):
 
 # relation of number of attendance for every class
 class AttendanceReport(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey("api.Student", on_delete=models.CASCADE)
+    course = models.ForeignKey("api.Course", on_delete=models.CASCADE)
     total_lecture = models.IntegerField()
     attendance = models.IntegerField(default=0)
 
