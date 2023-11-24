@@ -1,22 +1,25 @@
 from rest_framework import permissions
 
+from api.modelsDirec.school import SchoolTeachers
+from api.modelsDirec.user import Teacher
+
 
 # is_principal
 # if is a principal, can view, add, change, delete
 class IsPrincipal(permissions.BasePermission):
     def has_permission(self, request, view):
-        return (
-            request.user and request.user.is_authenticated and request.user.is_principal
-        )
+        return SchoolTeachers.objects.filter(
+            school_id=request.user.school.id, teacher_id=request.user.id
+        ).exists()
 
 
 # if is a student, can only view
 class IsTeacher(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
-            return request.user and request.user.is_authenticated
+            return True
 
-        request.user and request.user.is_authenticated and request.user.is_teacher
+        return Teacher.objects.filter(id=request.user.id).exists()
 
 
 class IsSameSchool(permissions.BasePermission):
@@ -37,13 +40,12 @@ class IsTeacherReadOnly(permissions.BasePermission):
         return False
 
 
-class IsTeacherOfSameCourse(permissions.BasePermission):
-    """
-    Custom permission to only allow teachers of the same course to interact with the students.
-    """
+class IsPrincipal(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
 
-    def has_object_permission(self, request, view, obj):
-        # Check if the user is a teacher and if the student is in one of the teacher's courses.
-        return (
-            request.user.is_teacher and obj.course in request.user.course_set.all()
-        )  # request.user.course_set.all() = reverse relatiion of course_set in teacher model
+        user_id = int(request.META.get("HTTP_CLIENT_APP_ID", None))
+        return SchoolTeachers.objects.filter(
+            teacher_id=user_id, isPrincipal=True
+        ).exists()

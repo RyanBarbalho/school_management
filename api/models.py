@@ -1,8 +1,10 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
-
-from api.managers import CustomUserManager
 from django.db import models
 
+from api.managers import CustomUserManager
+
+
+# verificar por que nao funciona inheritance manager
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
