@@ -23,4 +23,4 @@ class StudentViewSet(viewsets.ModelViewSet):
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticated, IsPrincipal]

@@ -45,7 +45,7 @@ class IsPrincipal(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        user_id = int(request.META.get("HTTP_CLIENT_APP_ID", None))
+        user_id = int(request.META.get("HTTP_CLIENT_APP_ID", str(request.user.id)))
         return SchoolTeachers.objects.filter(
             teacher_id=user_id, isPrincipal=True
         ).exists()
