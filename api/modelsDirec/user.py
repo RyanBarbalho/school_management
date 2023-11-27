@@ -7,6 +7,9 @@ class Teacher(CustomUser):
     name = models.CharField(max_length=50, default="user")
     phone = models.IntegerField(null=True)
     address = models.CharField(max_length=50, null=True)
+    # schoolTeachers = models.ManyToManyField(
+    #     School, through=SchoolTeachers, related_name="teachers"
+    # )
 
     def __str__(self):
         return self.name

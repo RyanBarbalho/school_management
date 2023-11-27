@@ -49,6 +49,10 @@ class School(models.Model):
     phone = models.IntegerField()
     objects = Principal()
 
+    # schoolteachers = models.ManyToManyField(
+    #     Teacher, through="SchoolTeachers", related_name="schools"
+    # )
+
     class Meta:
         db_table = "schools"
 

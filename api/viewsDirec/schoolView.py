@@ -35,36 +35,4 @@ class PublicStatementsViewSet(viewsets.ModelViewSet):
 class SchoolTeachersViewSet(viewsets.ModelViewSet):
     queryset = SchoolTeachers.objects.all()
     serializer_class = SchoolTeachersSerializer
-
-    def create(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response(
-                {"error": "User not authenticated"}, status=status.HTTP_403_FORBIDDEN
-            )
-
-        school_id = request.data["school"]
-        teacher_id = request.data["teacher"]
-
-        # check if the teacher is already in the school
-        if SchoolTeachers.objects.filter(school=school_id, teacher=teacher_id).exists():
-            return Response(
-                {"error": "teacher already in the school"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        # check if user is from same school
-        if not SchoolTeachers.objects.filter(
-            school=school_id, teacher=request.user
-        ).exists():
-            return Response(
-                {"error": "user not from same school"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        # check if user is principal
-        if not SchoolTeachers.objects.filter(
-            school=school_id, teacher=request.user, isPrincipal=True
-        ).exists():
-            return Response(
-                {"error": "user not principal"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return super().create(request, *args, **kwargs)
+    permission_classes = [AllowAny]

@@ -40,6 +40,14 @@ class IsTeacherReadOnly(permissions.BasePermission):
         return False
 
 
+class StudentOfOfSameSchool(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return ()
+
+        return False
+
+
 class IsPrincipal(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
