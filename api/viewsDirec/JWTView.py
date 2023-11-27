@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from api.serializers.jwtSerializer import JWTSerializer
 
 
-@method_decorator(csrf_exempt, name="dispatch")
+# @method_decorator(csrf_exempt, name="dispatch")
 class CustomJWTView(TokenObtainPairView):
     serializer_class = JWTSerializer
 

@@ -55,6 +55,11 @@ ROOT_URLCONF = "school_management.urls"
 
 AUTH_USER_MODEL = "api.CustomUser"
 
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOWED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000"]
+CORS_ORIGIN_ALLOW_ALL = True
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",

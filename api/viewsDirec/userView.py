@@ -11,13 +11,13 @@ class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticated, IsPrincipal]
 
-    # teacher can only see students in his courses of same school
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_principal:
-            return Student.objects.all()
-        else:
-            return Student.objects.filter(course__teacher=user)
+    # # teacher can only see students in his courses of same school
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     if user.is_principal:
+    #         return Student.objects.all()
+    #     else:
+    #         return Student.objects.filter(course__teacher=user)
 
 
 class TeacherViewSet(viewsets.ModelViewSet):
