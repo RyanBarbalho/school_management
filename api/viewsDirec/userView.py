@@ -1,8 +1,9 @@
 from rest_framework import generics, permissions, viewsets
 from rest_framework.permissions import IsAuthenticated
 
+from api.modelsDirec.school import SchoolTeachers
 from api.modelsDirec.user import Student, Teacher
-from api.permissions import IsPrincipal
+from api.permissions import IsPrincipal, IsTeacherOfSameSchool
 from api.serializers.userSerializer import StudentSerializer, TeacherSerializer
 
 
@@ -11,16 +12,13 @@ class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticated, IsPrincipal]
 
-    # # teacher can only see students in his courses of same school
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     if user.is_principal:
-    #         return Student.objects.all()
-    #     else:
-    #         return Student.objects.filter(course__teacher=user)
+    def get_queryset(self):
+        user = self.request.user
+        school = SchoolTeachers.objects.get(teacher=user).school
+        return Student.objects.filter(school=school)
 
 
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticated, IsPrincipal]

@@ -1,14 +1,14 @@
 from rest_framework import generics, permissions, viewsets
 
 from api.modelsDirec.course import *
-from api.permissions import *
+from api.permissions import IsPrincipal
 from api.serializers.courseSerializer import *
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = [IsPrincipal, IsSameSchool]
+    permission_classes = [IsPrincipal]
 
     def create(self, request, *args, **kwargs):
         request.data["school"] = request.user.school.id

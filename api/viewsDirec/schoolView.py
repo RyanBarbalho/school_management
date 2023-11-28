@@ -1,9 +1,7 @@
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
 
 from api.modelsDirec.school import *
-from api.permissions import *
 from api.serializers.schoolSerializer import *
 
 
@@ -24,7 +22,7 @@ class PrincipalCreate(generics.CreateAPIView):
 class PublicStatementsViewSet(viewsets.ModelViewSet):
     queryset = PublicStatements.objects.all()
     serializer_class = PublicStatementsSerializer
-    permission_classes = [IsTeacher, IsSameSchool]
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         request.data["sender"] = request.user.id
