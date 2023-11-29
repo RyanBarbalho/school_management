@@ -1,7 +1,12 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.test import TestCase
+from django.urls import reverse
+from rest_framework import status
 
 from api.modelsDirec.school import School, SchoolTeachers
+from api.modelsDirec.schoolyear import Grade
+from api.modelsDirec.
 from api.modelsDirec.user import Teacher
 from api.serializers.userSerializer import TeacherSerializer
 
@@ -72,4 +77,21 @@ class TeacherSerializerTest(TestCase):
         self.assertTrue(teacher.check_password(self.teacher_data["password"]))
         self.assertTrue(
             SchoolTeachers.objects.filter(teacher=teacher, school=self.school).exists()
+        )
+
+
+class GradeViewSetTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.principal_user = User.objects.create_user(
+            username="principal@example.com", password="password"
+        )
+        self.non_principal_user = User.objects.create_user(
+            username="non_principal@example.com", password="password"
+        )
+        self.school_teacher = SchoolTeachers.objects.create(
+            teacher=self.principal_user, isPrincipal=True
+        )
+        self.grade = Grade.objects.create(
+            name="Grade 1", school=self.school_teacher.school
         )

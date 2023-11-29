@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
 
 from api.modelsDirec.school import SchoolTeachers
@@ -12,14 +13,19 @@ class IsPrincipal(permissions.BasePermission):
         user_id = request.user.id
         view_name = view.__class__.__name__
 
-        if view_name == "StudentViewSet":
-            return (
-                request.data["school"]
-                == SchoolTeachers.objects.get(teacher=user_id).school.id
-                and SchoolTeachers.objects.get(teacher=user_id).isPrincipal
-            )
-        else:
-            return SchoolTeachers.objects.get(teacher=user_id).isPrincipal
+        try:
+            if view_name == "StudentViewSet":
+                return Student.objects.filter(
+                    id=user_id, school__isPrincipal=True
+                ).exists()
+            elif view_name == "TeacherViewSet":
+                return SchoolTeachers.objects.filter(
+                    teacher_id=user_id, isPrincipal=True
+                ).exists()
+        except ObjectDoesNotExist:
+            raise Exception("User is not a principal")
+
+        return False
 
 
 # students related permissions
