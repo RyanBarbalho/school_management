@@ -16,10 +16,10 @@ class TeacherSerializer(serializers.ModelSerializer):
 
     # quando teacher é criado, cria também o model SchoolTeachers relacionado a escola fornecida
     def create(self, validated_data):
-        print(f"validated_data before popping school_id: {validated_data}")
+        print(f"validated_data before popping school_id: {validated_data}")  # debug
         school_id = validated_data.pop("school_id", None)
         print(f"school_id: {school_id}")  # Print school_id for debugging
-        print(f"validated_data after popping school_id: {validated_data}")
+        print(f"validated_data after popping school_id: {validated_data}")  # debug
         instance = super().create(validated_data)
         instance.set_password(validated_data["password"])
         instance.save()
